@@ -7,6 +7,7 @@ import { useTool } from '@/hooks/useTool'
 import SelectionOverlay from './SelectionOverlay'
 import AlignmentGuides from './AlignmentGuides'
 import InlineTextEditor from './InlineTextEditor'
+import GridBackground from './GridBackground'
 
 export default function Canvas() {
   const doc = useEditor((s) => s.doc)
@@ -50,9 +51,15 @@ export default function Canvas() {
       >
         MM
       </span>
+      <GridBackground
+        charW={metrics.charW}
+        charH={metrics.charH}
+        cols={doc.gridW}
+        rows={doc.gridH}
+      />
       <pre
         ref={preRef}
-        className="m-0 select-none font-mono leading-[1.1] text-near-black"
+        className="relative m-0 select-none font-mono leading-[1.1] text-near-black"
         style={{ whiteSpace: 'pre', tabSize: 1, cursor: 'crosshair' }}
         onPointerDown={(e) => {
           ;(e.target as Element).setPointerCapture?.(e.pointerId)
