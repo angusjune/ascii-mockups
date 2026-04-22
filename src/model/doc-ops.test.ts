@@ -59,4 +59,10 @@ describe('z-order helpers', () => {
   it('toBack moves to start', () => {
     expect(toBack(base, 'c').shapes.map(s => s.id)).toEqual(['c','a','b'])
   })
+  it('toFront is a no-op on topmost shape (same reference returned)', () => {
+    expect(toFront(base, 'c')).toBe(base)
+  })
+  it('toBack is a no-op on bottom-most shape (same reference returned)', () => {
+    expect(toBack(base, 'a')).toBe(base)
+  })
 })

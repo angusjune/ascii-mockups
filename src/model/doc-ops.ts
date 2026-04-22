@@ -16,7 +16,9 @@ export function removeShapes(doc: Doc, ids: ShapeId[]): Doc {
   })
 }
 
-export function updateShape<S extends Shape>(doc: Doc, id: ShapeId, patch: Partial<S>): Doc {
+export function updateShape<S extends Shape>(
+  doc: Doc, id: ShapeId, patch: Partial<Omit<S, 'type' | 'id'>>,
+): Doc {
   let changed = false
   const shapes = doc.shapes.map(s => {
     if (s.id !== id) return s
@@ -53,12 +55,12 @@ export function sendBackward(doc: Doc, id: ShapeId): Doc {
 
 export function toFront(doc: Doc, id: ShapeId): Doc {
   const i = doc.shapes.findIndex(s => s.id === id)
-  if (i < 0) return doc
+  if (i < 0 || i === doc.shapes.length - 1) return doc
   return touched(doc, { shapes: moveInArray(doc.shapes, i, doc.shapes.length - 1) })
 }
 
 export function toBack(doc: Doc, id: ShapeId): Doc {
   const i = doc.shapes.findIndex(s => s.id === id)
-  if (i < 0) return doc
+  if (i <= 0) return doc
   return touched(doc, { shapes: moveInArray(doc.shapes, i, 0) })
 }

@@ -1,3 +1,5 @@
+import { newId } from '@/lib/ids'
+
 export type ShapeId = string
 export type ToolId =
   | 'select'
@@ -132,7 +134,7 @@ export interface Doc {
 export function emptyDoc(name = 'Untitled Mockup'): Doc {
   const now = Date.now()
   return {
-    id: cryptoRandomId(),
+    id: newId(),
     name,
     gridW: 80,
     gridH: 30,
@@ -142,8 +144,4 @@ export function emptyDoc(name = 'Untitled Mockup'): Doc {
     createdAt: now,
     updatedAt: now,
   }
-}
-
-function cryptoRandomId(): string {
-  return Math.random().toString(36).slice(2, 12)
 }
