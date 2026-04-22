@@ -38,78 +38,93 @@ type Interaction =
       originals: Map<string, { x: number; y: number }>
     }
   | { kind: 'resize'; handle: string; shape: Shape }
+  | { kind: 'marquee'; startX: number; startY: number; additive: boolean; priorSelection: string[] }
 
 export function useTool() {
   const interactionRef = useRef<Interaction | null>(null)
 
-  const onPointerDown = useCallback((p: CanvasPointer, target?: Element | null) => {
-    const st = useEditor.getState()
-    const tool = st.activeTool
-    const handle = target?.closest('[data-handle]')?.getAttribute('data-handle') ?? null
+  const onPointerDown = useCallback(
+    (p: CanvasPointer, target?: Element | null, shiftKey = false) => {
+      const st = useEditor.getState()
+      const tool = st.activeTool
+      const handle = target?.closest('[data-handle]')?.getAttribute('data-handle') ?? null
 
-    if (tool === 'select') {
-      if (handle) {
-        const primary = st.doc.shapes.find((s) => s.id === st.doc.selection[0])
-        if (primary) {
-          interactionRef.current = { kind: 'resize', handle, shape: primary }
+      if (tool === 'select') {
+        if (handle) {
+          const primary = st.doc.shapes.find((s) => s.id === st.doc.selection[0])
+          if (primary) {
+            interactionRef.current = { kind: 'resize', handle, shape: primary }
+            st.beginCoalesce()
+            st.setDragging(true)
+            return
+          }
+        }
+        const hit = st.doc.shapes
+          .slice()
+          .reverse()
+          .find(
+            (s) =>
+              !s.locked &&
+              !s.hidden &&
+              p.x >= s.x &&
+              p.x < s.x + s.w &&
+              p.y >= s.y &&
+              p.y < s.y + s.h,
+          )
+        if (hit) {
+          const alreadySelected = st.doc.selection.includes(hit.id)
+          if (!alreadySelected)
+            st.applyDocChange((d) => setSelection(d, [hit.id]), { skipHistory: true })
+          const selectionIds = alreadySelected ? st.doc.selection : [hit.id]
+          const originals = new Map(
+            selectionIds
+              .map((id) => {
+                const sh = st.doc.shapes.find((s) => s.id === id)
+                return sh ? ([id, { x: sh.x, y: sh.y }] as const) : null
+              })
+              .filter(Boolean) as Array<readonly [string, { x: number; y: number }]>,
+          )
+          interactionRef.current = { kind: 'move', startX: p.x, startY: p.y, originals }
           st.beginCoalesce()
           st.setDragging(true)
-          return
+        } else {
+          // Start marquee select on empty canvas.
+          interactionRef.current = {
+            kind: 'marquee',
+            startX: p.x,
+            startY: p.y,
+            additive: shiftKey,
+            priorSelection: shiftKey ? [...st.doc.selection] : [],
+          }
+          if (!shiftKey) {
+            st.applyDocChange((d) => setSelection(d, []), { skipHistory: true })
+          }
+          st.setMarquee({ x0: p.x, y0: p.y, x1: p.x, y1: p.y })
         }
+        return
       }
-      const hit = st.doc.shapes
-        .slice()
-        .reverse()
-        .find(
-          (s) =>
-            !s.locked &&
-            !s.hidden &&
-            p.x >= s.x &&
-            p.x < s.x + s.w &&
-            p.y >= s.y &&
-            p.y < s.y + s.h,
-        )
-      if (hit) {
-        const alreadySelected = st.doc.selection.includes(hit.id)
-        if (!alreadySelected)
-          st.applyDocChange((d) => setSelection(d, [hit.id]), { skipHistory: true })
-        const selectionIds = alreadySelected ? st.doc.selection : [hit.id]
-        const originals = new Map(
-          selectionIds
-            .map((id) => {
-              const sh = st.doc.shapes.find((s) => s.id === id)
-              return sh ? ([id, { x: sh.x, y: sh.y }] as const) : null
-            })
-            .filter(Boolean) as Array<readonly [string, { x: number; y: number }]>,
-        )
-        interactionRef.current = { kind: 'move', startX: p.x, startY: p.y, originals }
+
+      if (DRAWING_TOOLS.has(tool as ShapeType)) {
+        const id = newId()
+        interactionRef.current = { kind: 'draw', startX: p.x, startY: p.y, shapeId: id }
+        const seed = createTemplate(tool as ShapeType, p.x, p.y)
+        const shape: Shape = { ...seed, id, x: p.x, y: p.y, w: 1, h: 1 }
         st.beginCoalesce()
+        st.applyDocChange((d) => addShape(d, shape))
+        st.applyDocChange((d) => setSelection(d, [id]))
         st.setDragging(true)
-      } else {
-        st.applyDocChange((d) => setSelection(d, []), { skipHistory: true })
+        return
       }
-      return
-    }
 
-    if (DRAWING_TOOLS.has(tool as ShapeType)) {
-      const id = newId()
-      interactionRef.current = { kind: 'draw', startX: p.x, startY: p.y, shapeId: id }
-      const seed = createTemplate(tool as ShapeType, p.x, p.y)
-      const shape: Shape = { ...seed, id, x: p.x, y: p.y, w: 1, h: 1 }
-      st.beginCoalesce()
-      st.applyDocChange((d) => addShape(d, shape))
-      st.applyDocChange((d) => setSelection(d, [id]))
-      st.setDragging(true)
-      return
-    }
-
-    if (TEMPLATE_TOOLS.has(tool as ShapeType)) {
-      const shape = createTemplate(tool as ShapeType, p.x, p.y)
-      st.applyDocChange((d) => setSelection(addShape(d, shape), [shape.id]))
-      st.setActiveTool('select')
-      return
-    }
-  }, [])
+      if (TEMPLATE_TOOLS.has(tool as ShapeType)) {
+        const shape = createTemplate(tool as ShapeType, p.x, p.y)
+        st.applyDocChange((d) => setSelection(addShape(d, shape), [shape.id]))
+        st.setActiveTool('select')
+        return
+      }
+    },
+    [],
+  )
 
   const onPointerMove = useCallback((p: CanvasPointer) => {
     const st = useEditor.getState()
@@ -160,6 +175,29 @@ export function useTool() {
       const w = Math.max(1, Math.abs(p.x - sx) + 1)
       const h = Math.max(1, Math.abs(p.y - sy) + 1)
       st.applyDocChange((d) => updateShape(d, i.shapeId, { x, y, w, h }))
+      return
+    }
+    if (i.kind === 'marquee') {
+      st.setMarquee({ x0: i.startX, y0: i.startY, x1: p.x, y1: p.y })
+      const x0 = Math.min(i.startX, p.x)
+      const y0 = Math.min(i.startY, p.y)
+      const x1 = Math.max(i.startX, p.x)
+      const y1 = Math.max(i.startY, p.y)
+      const hitIds = st.doc.shapes
+        .filter(
+          (s) =>
+            !s.hidden &&
+            !s.locked &&
+            s.x + s.w - 1 >= x0 &&
+            s.x <= x1 &&
+            s.y + s.h - 1 >= y0 &&
+            s.y <= y1,
+        )
+        .map((s) => s.id)
+      const nextSel = i.additive
+        ? Array.from(new Set([...i.priorSelection, ...hitIds]))
+        : hitIds
+      st.applyDocChange((d) => setSelection(d, nextSel), { skipHistory: true })
     }
   }, [])
 
@@ -179,7 +217,12 @@ export function useTool() {
           }
         }
       }
-      st.endCoalesce()
+      if (i.kind === 'marquee') {
+        st.setMarquee(null)
+      }
+      if (i.kind !== 'marquee') {
+        st.endCoalesce()
+      }
       st.setDragging(false)
     }
     interactionRef.current = null

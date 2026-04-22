@@ -8,6 +8,7 @@ import SelectionOverlay from './SelectionOverlay'
 import AlignmentGuides from './AlignmentGuides'
 import InlineTextEditor from './InlineTextEditor'
 import GridBackground from './GridBackground'
+import MarqueeOverlay from './MarqueeOverlay'
 
 export default function Canvas() {
   const doc = useEditor((s) => s.doc)
@@ -47,7 +48,7 @@ export default function Canvas() {
       style={{ cursor: activeTool === 'select' ? 'default' : 'crosshair' }}
       onPointerDown={(e) => {
         ;(e.currentTarget as Element).setPointerCapture?.(e.pointerId)
-        tool.onPointerDown(toCell(e), e.target as Element)
+        tool.onPointerDown(toCell(e), e.target as Element, e.shiftKey)
       }}
       onPointerMove={(e) => tool.onPointerMove(toCell(e))}
       onPointerUp={() => tool.onPointerUp()}
@@ -88,6 +89,7 @@ export default function Canvas() {
         {display}
       </pre>
       <SelectionOverlay charW={metrics.charW} charH={metrics.charH} />
+      <MarqueeOverlay charW={metrics.charW} charH={metrics.charH} />
       <AlignmentGuides charW={metrics.charW} charH={metrics.charH} />
       <InlineTextEditor charW={metrics.charW} charH={metrics.charH} />
     </div>

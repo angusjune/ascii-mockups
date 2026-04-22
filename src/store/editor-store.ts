@@ -5,6 +5,13 @@ import { addShape, setSelection } from '@/model/doc-ops'
 import { emptyHistory, pushHistory, type HistoryState } from './history'
 import { load, remove, save } from '@/lib/local-storage'
 
+export interface MarqueeRect {
+  x0: number
+  y0: number
+  x1: number
+  y1: number
+}
+
 export interface EditorState {
   doc: Doc
   activeTool: ToolId
@@ -12,6 +19,7 @@ export interface EditorState {
   draftShape: Shape | null
   isDragging: boolean
   inlineEditShapeId: ShapeId | null
+  marquee: MarqueeRect | null
   layout: { leftW: number; rightW: number }
   history: HistoryState
 
@@ -20,6 +28,7 @@ export interface EditorState {
   setDraft: (s: Shape | null) => void
   setDragging: (d: boolean) => void
   setInlineEdit: (id: ShapeId | null) => void
+  setMarquee: (r: MarqueeRect | null) => void
   setLayout: (patch: Partial<{ leftW: number; rightW: number }>) => void
 
   applyDocChange: (fn: (d: Doc) => Doc, opts?: { skipHistory?: boolean }) => void
@@ -54,6 +63,7 @@ export const useEditor = create<EditorState>((set) => ({
   draftShape: null,
   isDragging: false,
   inlineEditShapeId: null,
+  marquee: null,
   layout: DEFAULT_LAYOUT,
   history: emptyHistory(),
 
@@ -62,6 +72,7 @@ export const useEditor = create<EditorState>((set) => ({
   setDraft: (s) => set({ draftShape: s }),
   setDragging: (d) => set({ isDragging: d }),
   setInlineEdit: (id) => set({ inlineEditShapeId: id }),
+  setMarquee: (r) => set({ marquee: r }),
   setLayout: (patch) => set((s) => ({ layout: { ...s.layout, ...patch } })),
 
   applyDocChange: (fn, opts) =>
@@ -156,6 +167,7 @@ export const useEditor = create<EditorState>((set) => ({
       draftShape: null,
       isDragging: false,
       inlineEditShapeId: null,
+      marquee: null,
       layout: DEFAULT_LAYOUT,
       history: emptyHistory(),
     }),
