@@ -47,6 +47,12 @@ export default function Canvas() {
       className="relative inline-block"
       style={{ cursor: activeTool === 'select' ? 'default' : 'crosshair' }}
       onPointerDown={(e) => {
+        // Blur any focused input so subsequent keyboard shortcuts (Delete,
+        // arrow nudge, tool hotkeys) reach the canvas-level handler.
+        const active = document.activeElement as HTMLElement | null
+        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
+          active.blur()
+        }
         ;(e.currentTarget as Element).setPointerCapture?.(e.pointerId)
         tool.onPointerDown(toCell(e), e.target as Element, e.shiftKey)
       }}
