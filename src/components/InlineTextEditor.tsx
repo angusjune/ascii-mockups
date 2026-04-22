@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react'
 import { useEditor } from '@/store/editor-store'
 import { updateShape } from '@/model/doc-ops'
+import { minWidthForText } from '@/model/shape-ops'
 import type { Shape } from '@/model/types'
 
 export default function InlineTextEditor({
@@ -29,11 +30,14 @@ export default function InlineTextEditor({
     <textarea
       ref={ref}
       value={value}
-      onChange={(e) =>
-        apply((d) =>
-          updateShape(d, s.id, { [field]: e.target.value } as never),
-        )
-      }
+      onChange={(e) => {
+        const next = e.target.value
+        const patch: Record<string, unknown> = { [field]: next }
+        if (s.type === 'text' || s.type === 'button') {
+          patch.w = Math.max(s.w, minWidthForText(s.type, next))
+        }
+        apply((d) => updateShape(d, s.id, patch as never))
+      }}
       onBlur={() => setEditing(null)}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {

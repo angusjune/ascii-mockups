@@ -1,6 +1,7 @@
 'use client'
 import { useEditor } from '@/store/editor-store'
 import { updateShape } from '@/model/doc-ops'
+import { minWidthForText } from '@/model/shape-ops'
 import type { Shape } from '@/model/types'
 
 export default function Inspector() {
@@ -8,8 +9,16 @@ export default function Inspector() {
   const apply = useEditor((s) => s.applyDocChange)
   const sel = doc.shapes.find((s) => s.id === doc.selection[0])
   if (!sel) return <p className="text-sm text-stone-gray">No selection.</p>
-  const onChange = (patch: Partial<Omit<Shape, 'type' | 'id'>>) =>
-    apply((d) => updateShape(d, sel.id, patch as never))
+  const onChange = (patch: Partial<Omit<Shape, 'type' | 'id'>>) => {
+    let finalPatch: Record<string, unknown> = { ...patch }
+    // Auto-grow width for Text and Button when their text content changes.
+    if (sel.type === 'text' && typeof finalPatch.text === 'string') {
+      finalPatch.w = Math.max(sel.w, minWidthForText(sel.type, finalPatch.text))
+    } else if (sel.type === 'button' && typeof finalPatch.label === 'string') {
+      finalPatch.w = Math.max(sel.w, minWidthForText(sel.type, finalPatch.label))
+    }
+    apply((d) => updateShape(d, sel.id, finalPatch as never))
+  }
 
   return (
     <div className="space-y-3 text-sm">

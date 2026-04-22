@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { move, resize, duplicateShape } from './shape-ops'
+import { move, resize, duplicateShape, minWidthForText } from './shape-ops'
 import type { RectangleShape } from './types'
 
 const rect: RectangleShape = {
@@ -31,5 +31,21 @@ describe('duplicateShape', () => {
     expect(dup.x).toBe(rect.x + 1)
     expect(dup.y).toBe(rect.y + 1)
     expect(dup.type).toBe(rect.type)
+  })
+})
+
+describe('minWidthForText', () => {
+  it('text width = longest line length', () => {
+    expect(minWidthForText('text', 'hello')).toBe(5)
+    expect(minWidthForText('text', 'short\nlonger line')).toBe(11)
+    expect(minWidthForText('text', '')).toBe(1)
+  })
+  it('button width = label length + 4 for the brackets and padding', () => {
+    expect(minWidthForText('button', 'OK')).toBe(6)
+    expect(minWidthForText('button', '')).toBe(4)
+    expect(minWidthForText('button', 'Save Changes')).toBe(16)
+  })
+  it('returns 1 for non-auto-grow types', () => {
+    expect(minWidthForText('rectangle', 'anything')).toBe(1)
   })
 })
