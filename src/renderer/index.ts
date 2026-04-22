@@ -34,6 +34,8 @@ import { rasterizeLine } from './rasterize-line'
 import { rasterizeArrow } from './rasterize-arrow'
 import { rasterizeEllipse } from './rasterize-ellipse'
 import { rasterizeButton } from './rasterize-button'
+import { rasterizeCheckbox } from './rasterize-checkbox'
+import { rasterizeIcon } from './rasterize-icon'
 
 registerRasterizer('rectangle', rasterizeRectangle)
 registerRasterizer('text', rasterizeText)
@@ -41,3 +43,5 @@ registerRasterizer('line', rasterizeLine)
 registerRasterizer('arrow', rasterizeArrow)
 registerRasterizer('ellipse', rasterizeEllipse)
 registerRasterizer('button', rasterizeButton)
+registerRasterizer('checkbox', rasterizeCheckbox)
+registerRasterizer('icon', rasterizeIcon)
