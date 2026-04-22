@@ -4,6 +4,7 @@ import TopBar from './TopBar'
 import ToolPalette from './ToolPalette'
 import Canvas from './Canvas'
 import Inspector from './Inspector'
+import LayerPanel from './LayerPanel'
 import { useKeyboard } from '@/hooks/useKeyboard'
 
 export default function Editor() {
@@ -31,6 +32,9 @@ export default function Editor() {
         >
           <div className="rounded-[12px] bg-ivory p-3 ring-border-warm">
             <Inspector />
+          </div>
+          <div className="rounded-[12px] bg-ivory p-3 ring-border-warm">
+            <LayerPanel />
           </div>
         </aside>
       </div>
