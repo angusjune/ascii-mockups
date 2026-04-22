@@ -2,6 +2,8 @@
 import { useEditor } from '@/store/editor-store'
 import OpenDocDropdown from './OpenDocDropdown'
 import ExportMenu from './ExportMenu'
+import SettingsMenu from './SettingsMenu'
+import ThemeToggle from './ThemeToggle'
 
 export default function TopBar() {
   const name = useEditor((s) => s.doc.name)
@@ -16,6 +18,7 @@ export default function TopBar() {
         aria-label="Mockup name"
       />
       <div className="flex items-center gap-2">
+        <SettingsMenu />
         <button
           onClick={newDoc}
           className="rounded-[8px] bg-warm-sand px-3 py-1.5 text-sm text-charcoal-warm ring-1 ring-ring-warm"
@@ -23,6 +26,7 @@ export default function TopBar() {
           New
         </button>
         <OpenDocDropdown />
+        <ThemeToggle />
         <ExportMenu />
       </div>
     </header>

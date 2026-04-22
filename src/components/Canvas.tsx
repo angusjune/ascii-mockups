@@ -5,6 +5,7 @@ import { render, toText } from '@/renderer'
 import { useCellMetrics } from '@/hooks/useCellMetrics'
 import { useTool } from '@/hooks/useTool'
 import SelectionOverlay from './SelectionOverlay'
+import AlignmentGuides from './AlignmentGuides'
 
 export default function Canvas() {
   const doc = useEditor((s) => s.doc)
@@ -52,6 +53,7 @@ export default function Canvas() {
         {display}
       </pre>
       <SelectionOverlay charW={metrics.charW} charH={metrics.charH} />
+      <AlignmentGuides charW={metrics.charW} charH={metrics.charH} />
     </div>
   )
 }
