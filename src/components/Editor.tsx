@@ -2,6 +2,7 @@
 
 import TopBar from './TopBar'
 import ToolPalette from './ToolPalette'
+import Canvas from './Canvas'
 
 export default function Editor() {
   return (
@@ -17,8 +18,8 @@ export default function Editor() {
           </div>
         </aside>
         <main className="flex-1 overflow-auto p-6">
-          <div className="mx-auto inline-block rounded-[32px] bg-ivory p-6 ring-border-warm shadow-whisper">
-            <pre className="font-mono text-near-black leading-[1.1]">{`(canvas goes here)`}</pre>
+          <div className="inline-block rounded-[32px] bg-ivory p-6 ring-border-warm shadow-whisper">
+            <Canvas />
           </div>
         </main>
         <aside
