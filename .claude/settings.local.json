@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git -C /Users/anguszhu/Web/ascii-mockups add docs/superpowers/plans/2026-04-22-ascii-mockups.md)",
+      "Bash(git -C /Users/anguszhu/Web/ascii-mockups commit -m \"docs: add ASCII mockups implementation plan\")",
+      "Bash(git -C /Users/anguszhu/Web/ascii-mockups branch --show-current)",
+      "Bash(git -C /Users/anguszhu/Web/ascii-mockups log --oneline)",
+      "Bash(git -C /Users/anguszhu/Web/ascii-mockups log --oneline -5)",
+      "Bash(bun --version)",
+      "Bash(bun install *)",
+      "Bash(bun run *)",
+      "Bash(git *)",
+      "Bash(bunx tsc *)",
+      "Bash(bun x *)",
+      "Bash(bun add *)",
+      "Bash(bun *)"
+    ]
+  }
+}
