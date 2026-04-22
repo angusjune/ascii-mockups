@@ -20,6 +20,11 @@ export function emptyGrid(w: number, h: number): Grid {
   return g
 }
 
+/**
+ * Writes a CellPatch into the grid in place. The grid is mutated; callers must
+ * pass a grid they own (e.g., from `emptyGrid`). Cells containing the TRANSPARENT
+ * sentinel are skipped. Cells outside grid bounds are clipped.
+ */
 export function applyPatch(grid: Grid, patch: CellPatch): void {
   const gh = grid.length
   const gw = gh === 0 ? 0 : grid[0].length
@@ -39,5 +44,7 @@ export function applyPatch(grid: Grid, patch: CellPatch): void {
 }
 
 export function gridToString(grid: Grid): string {
-  return grid.map(row => row.join('').replace(/\s+$/u, '')).join('\n')
+  return grid
+    .map(row => row.map(ch => (ch === TRANSPARENT ? ' ' : ch)).join('').replace(/ +$/, ''))
+    .join('\n')
 }

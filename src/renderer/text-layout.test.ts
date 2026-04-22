@@ -14,6 +14,15 @@ describe('wrapText', () => {
   it('handles explicit newlines', () => {
     expect(wrapText('a\nb c', 3)).toEqual(['a', 'b c'])
   })
+  it('returns [""] for empty input', () => {
+    expect(wrapText('', 5)).toEqual([''])
+  })
+  it('returns [""] for width <= 0', () => {
+    expect(wrapText('anything', 0)).toEqual([''])
+  })
+  it('keeps exact-width words intact (no rewrap)', () => {
+    expect(wrapText('abcdef more', 6)).toEqual(['abcdef', 'more'])
+  })
 })
 
 describe('alignLine', () => {

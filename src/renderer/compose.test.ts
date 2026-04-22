@@ -42,4 +42,8 @@ describe('gridToString', () => {
     const g = [['a','b',' '],['c',' ',' ']]
     expect(gridToString(g)).toBe('ab\nc')
   })
+  it('replaces stray TRANSPARENT sentinels with spaces before trim', () => {
+    const g = [['a', TRANSPARENT, 'c'], [TRANSPARENT, TRANSPARENT, TRANSPARENT]]
+    expect(gridToString(g)).toBe('a c\n')
+  })
 })
