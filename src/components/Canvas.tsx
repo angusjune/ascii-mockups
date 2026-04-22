@@ -11,6 +11,7 @@ import GridBackground from './GridBackground'
 
 export default function Canvas() {
   const doc = useEditor((s) => s.doc)
+  const activeTool = useEditor((s) => s.activeTool)
   const preRef = useRef<HTMLPreElement>(null)
   const [probeRef, metrics] = useCellMetrics()
   const tool = useTool()
@@ -60,7 +61,11 @@ export default function Canvas() {
       <pre
         ref={preRef}
         className="relative m-0 select-none font-mono leading-[1.1] text-near-black"
-        style={{ whiteSpace: 'pre', tabSize: 1, cursor: 'crosshair' }}
+        style={{
+          whiteSpace: 'pre',
+          tabSize: 1,
+          cursor: activeTool === 'select' ? 'default' : 'crosshair',
+        }}
         onPointerDown={(e) => {
           ;(e.target as Element).setPointerCapture?.(e.pointerId)
           tool.onPointerDown(toCell(e), e.target as Element)
