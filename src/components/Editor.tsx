@@ -3,6 +3,7 @@
 import TopBar from './TopBar'
 import ToolPalette from './ToolPalette'
 import Canvas from './Canvas'
+import Inspector from './Inspector'
 import { useKeyboard } from '@/hooks/useKeyboard'
 
 export default function Editor() {
@@ -26,9 +27,11 @@ export default function Editor() {
         </main>
         <aside
           id="inspector"
-          className="w-72 shrink-0 border-l border-border-cream bg-parchment p-3"
+          className="flex w-72 shrink-0 flex-col gap-3 border-l border-border-cream bg-parchment p-3"
         >
-          <div className="rounded-[12px] bg-ivory p-3 ring-border-warm">Inspector</div>
+          <div className="rounded-[12px] bg-ivory p-3 ring-border-warm">
+            <Inspector />
+          </div>
         </aside>
       </div>
     </div>
