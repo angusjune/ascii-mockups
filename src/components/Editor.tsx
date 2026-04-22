@@ -3,8 +3,10 @@
 import TopBar from './TopBar'
 import ToolPalette from './ToolPalette'
 import Canvas from './Canvas'
+import { useKeyboard } from '@/hooks/useKeyboard'
 
 export default function Editor() {
+  useKeyboard()
   return (
     <div className="flex h-screen flex-col bg-parchment">
       <TopBar />
