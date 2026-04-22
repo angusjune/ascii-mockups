@@ -1,6 +1,7 @@
 'use client'
 import { useEditor } from '@/store/editor-store'
 import OpenDocDropdown from './OpenDocDropdown'
+import ExportMenu from './ExportMenu'
 
 export default function TopBar() {
   const name = useEditor((s) => s.doc.name)
@@ -22,6 +23,7 @@ export default function TopBar() {
           New
         </button>
         <OpenDocDropdown />
+        <ExportMenu />
       </div>
     </header>
   )
