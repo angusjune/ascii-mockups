@@ -4,6 +4,7 @@ import { useEditor } from '@/store/editor-store'
 import type { Shape, ShapeType } from '@/model/types'
 import { createTemplate } from '@/templates'
 import { setSelection, addShape, updateShape } from '@/model/doc-ops'
+import { minWidthForText } from '@/model/shape-ops'
 import { newId } from '@/lib/ids'
 
 export interface CanvasPointer {
@@ -166,6 +167,18 @@ export function useTool() {
     const st = useEditor.getState()
     const i = interactionRef.current
     if (i) {
+      // On drawing-completion, enforce a minimum width for text-bearing shapes
+      // so a plain click still renders the default content legibly.
+      if (i.kind === 'draw') {
+        const shape = st.doc.shapes.find((s) => s.id === i.shapeId)
+        if (shape && (shape.type === 'text' || shape.type === 'button')) {
+          const content = shape.type === 'text' ? shape.text : shape.label
+          const minW = minWidthForText(shape.type, content)
+          if (shape.w < minW) {
+            st.applyDocChange((d) => updateShape(d, i.shapeId, { w: minW }))
+          }
+        }
+      }
       st.endCoalesce()
       st.setDragging(false)
     }
