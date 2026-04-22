@@ -30,6 +30,8 @@ export type { Grid, CellPatch }
 
 import { rasterizeRectangle } from './rasterize-rectangle'
 import { rasterizeText } from './rasterize-text'
+import { rasterizeLine } from './rasterize-line'
 
 registerRasterizer('rectangle', rasterizeRectangle)
 registerRasterizer('text', rasterizeText)
+registerRasterizer('line', rasterizeLine)
