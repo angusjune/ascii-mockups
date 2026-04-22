@@ -42,16 +42,18 @@ export default function Editor() {
             <Canvas />
           </div>
         </main>
-        <Resizer
-          side="right"
-          value={rightW}
-          onChange={(v) => setLayout({ rightW: v })}
-          onReset={() => setLayout({ rightW: 280 })}
-        />
+        <div className="hidden lg:contents">
+          <Resizer
+            side="right"
+            value={rightW}
+            onChange={(v) => setLayout({ rightW: v })}
+            onReset={() => setLayout({ rightW: 280 })}
+          />
+        </div>
         <aside
           id="inspector"
           style={{ width: rightW }}
-          className="flex shrink-0 flex-col gap-3 border-l border-border-cream bg-parchment p-3 overflow-y-auto"
+          className="hidden shrink-0 flex-col gap-3 border-l border-border-cream bg-parchment p-3 overflow-y-auto lg:flex"
         >
           <div className="rounded-[12px] bg-ivory p-3 ring-border-warm">
             <Inspector />
