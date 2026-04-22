@@ -5,30 +5,49 @@ import ToolPalette from './ToolPalette'
 import Canvas from './Canvas'
 import Inspector from './Inspector'
 import LayerPanel from './LayerPanel'
+import Resizer from './Resizer'
 import { useKeyboard } from '@/hooks/useKeyboard'
+import { useEditor } from '@/store/editor-store'
 
 export default function Editor() {
   useKeyboard()
+  const leftW = useEditor((s) => s.layout.leftW)
+  const rightW = useEditor((s) => s.layout.rightW)
+  const setLayout = useEditor((s) => s.setLayout)
   return (
     <div className="flex h-screen flex-col bg-parchment">
       <TopBar />
       <div className="flex flex-1 overflow-hidden">
         <aside
           id="tool-palette"
-          className="w-60 shrink-0 border-r border-border-cream bg-parchment p-3"
+          style={{ width: leftW }}
+          className="shrink-0 border-r border-border-cream bg-parchment p-3 overflow-y-auto"
         >
           <div className="rounded-[12px] bg-ivory p-3 ring-border-warm">
             <ToolPalette />
           </div>
         </aside>
+        <Resizer
+          side="left"
+          value={leftW}
+          onChange={(v) => setLayout({ leftW: v })}
+          onReset={() => setLayout({ leftW: 240 })}
+        />
         <main className="flex-1 overflow-auto p-6">
           <div className="inline-block rounded-[32px] bg-ivory p-6 ring-border-warm shadow-whisper">
             <Canvas />
           </div>
         </main>
+        <Resizer
+          side="right"
+          value={rightW}
+          onChange={(v) => setLayout({ rightW: v })}
+          onReset={() => setLayout({ rightW: 280 })}
+        />
         <aside
           id="inspector"
-          className="flex w-72 shrink-0 flex-col gap-3 border-l border-border-cream bg-parchment p-3"
+          style={{ width: rightW }}
+          className="flex shrink-0 flex-col gap-3 border-l border-border-cream bg-parchment p-3 overflow-y-auto"
         >
           <div className="rounded-[12px] bg-ivory p-3 ring-border-warm">
             <Inspector />
