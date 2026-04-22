@@ -8,10 +8,12 @@ import LayerPanel from './LayerPanel'
 import Resizer from './Resizer'
 import { useKeyboard } from '@/hooks/useKeyboard'
 import { useAutosave } from '@/hooks/useAutosave'
+import { useClipboard } from '@/hooks/useClipboard'
 import { useEditor } from '@/store/editor-store'
 
 export default function Editor() {
   useKeyboard()
+  useClipboard()
   useAutosave()
   const leftW = useEditor((s) => s.layout.leftW)
   const rightW = useEditor((s) => s.layout.rightW)

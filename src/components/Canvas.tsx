@@ -6,6 +6,7 @@ import { useCellMetrics } from '@/hooks/useCellMetrics'
 import { useTool } from '@/hooks/useTool'
 import SelectionOverlay from './SelectionOverlay'
 import AlignmentGuides from './AlignmentGuides'
+import InlineTextEditor from './InlineTextEditor'
 
 export default function Canvas() {
   const doc = useEditor((s) => s.doc)
@@ -49,11 +50,27 @@ export default function Canvas() {
         }}
         onPointerMove={(e) => tool.onPointerMove(toCell(e))}
         onPointerUp={() => tool.onPointerUp()}
+        onDoubleClick={(e) => {
+          const c = toCell(e)
+          const hit = doc.shapes
+            .slice()
+            .reverse()
+            .find(
+              (s) =>
+                !s.hidden &&
+                c.x >= s.x &&
+                c.x < s.x + s.w &&
+                c.y >= s.y &&
+                c.y < s.y + s.h,
+            )
+          if (hit) useEditor.getState().setInlineEdit(hit.id)
+        }}
       >
         {display}
       </pre>
       <SelectionOverlay charW={metrics.charW} charH={metrics.charH} />
       <AlignmentGuides charW={metrics.charW} charH={metrics.charH} />
+      <InlineTextEditor charW={metrics.charW} charH={metrics.charH} />
     </div>
   )
 }
