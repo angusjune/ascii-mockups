@@ -14,7 +14,17 @@ export default function Canvas() {
   const [probeRef, metrics] = useCellMetrics()
   const tool = useTool()
   const text = useMemo(() => toText(render(doc)), [doc])
-  const display = text || ' '.repeat(doc.gridW) + '\n'.repeat(Math.max(0, doc.gridH - 1))
+  // Pad display with trailing spaces per row so the <pre> has non-zero width
+  // (Playwright's visibility check and CSS layout both need visible content).
+  const display = useMemo(() => {
+    const lines = text.split('\n')
+    const padded: string[] = []
+    for (let r = 0; r < doc.gridH; r++) {
+      const line = lines[r] ?? ''
+      padded.push(line + ' '.repeat(Math.max(0, doc.gridW - line.length)))
+    }
+    return padded.join('\n')
+  }, [text, doc.gridW, doc.gridH])
 
   const toCell = (e: React.PointerEvent | React.MouseEvent) => {
     const el = preRef.current
