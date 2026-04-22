@@ -29,4 +29,7 @@ export function toText(grid: Grid): string {
 export type { Grid, CellPatch }
 
 import { rasterizeRectangle } from './rasterize-rectangle'
+import { rasterizeText } from './rasterize-text'
+
 registerRasterizer('rectangle', rasterizeRectangle)
+registerRasterizer('text', rasterizeText)
