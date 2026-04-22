@@ -9,7 +9,7 @@ describe('rasterizeBrowser', () => {
       type: 'browser',
       x: 0,
       y: 0,
-      w: 30,
+      w: 40,
       h: 6,
       url: 'https://example.com',
       title: 'Example',
