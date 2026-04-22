@@ -27,3 +27,6 @@ export function toText(grid: Grid): string {
 }
 
 export type { Grid, CellPatch }
+
+import { rasterizeRectangle } from './rasterize-rectangle'
+registerRasterizer('rectangle', rasterizeRectangle)
