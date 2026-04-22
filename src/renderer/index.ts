@@ -36,6 +36,9 @@ import { rasterizeEllipse } from './rasterize-ellipse'
 import { rasterizeButton } from './rasterize-button'
 import { rasterizeCheckbox } from './rasterize-checkbox'
 import { rasterizeIcon } from './rasterize-icon'
+import { rasterizeImagePlaceholder } from './rasterize-image-placeholder'
+import { rasterizeTextField } from './rasterize-textfield'
+import { rasterizeTextArea } from './rasterize-textarea'
 
 registerRasterizer('rectangle', rasterizeRectangle)
 registerRasterizer('text', rasterizeText)
@@ -45,3 +48,6 @@ registerRasterizer('ellipse', rasterizeEllipse)
 registerRasterizer('button', rasterizeButton)
 registerRasterizer('checkbox', rasterizeCheckbox)
 registerRasterizer('icon', rasterizeIcon)
+registerRasterizer('image-placeholder', rasterizeImagePlaceholder)
+registerRasterizer('textfield', rasterizeTextField)
+registerRasterizer('textarea', rasterizeTextArea)
