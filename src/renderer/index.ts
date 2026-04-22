@@ -33,9 +33,11 @@ import { rasterizeText } from './rasterize-text'
 import { rasterizeLine } from './rasterize-line'
 import { rasterizeArrow } from './rasterize-arrow'
 import { rasterizeEllipse } from './rasterize-ellipse'
+import { rasterizeButton } from './rasterize-button'
 
 registerRasterizer('rectangle', rasterizeRectangle)
 registerRasterizer('text', rasterizeText)
 registerRasterizer('line', rasterizeLine)
 registerRasterizer('arrow', rasterizeArrow)
 registerRasterizer('ellipse', rasterizeEllipse)
+registerRasterizer('button', rasterizeButton)
