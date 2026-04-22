@@ -5,7 +5,8 @@ import { LINE, ARROW_HEADS, TRANSPARENT } from './glyphs'
 export function rasterizeArrow(shape: ArrowShape): CellPatch {
   const { x, y, w, h, style, direction, head } = shape
   const g = LINE[style]
-  const headChar = ARROW_HEADS[head][direction]
+  const headSet = style === 'ascii' ? ARROW_HEADS.ascii : ARROW_HEADS[head]
+  const headChar = headSet[direction]
   const cells: string[][] = []
   for (let r = 0; r < h; r++) cells.push(new Array(w).fill(TRANSPARENT))
 
