@@ -3,6 +3,7 @@ import type { Doc, Shape, ShapeId, ToolId } from '@/model/types'
 import { emptyDoc } from '@/model/types'
 import { addShape, setSelection } from '@/model/doc-ops'
 import { emptyHistory, pushHistory, type HistoryState } from './history'
+import { load, remove, save } from '@/lib/local-storage'
 
 export interface EditorState {
   doc: Doc
@@ -30,7 +31,18 @@ export interface EditorState {
   beginCoalesce: () => void
   endCoalesce: () => void
 
+  newDoc: () => void
+  renameDoc: (name: string) => void
+  openDocById: (id: string) => void
+  deleteDocById: (id: string) => void
+
   resetForTest: () => void
+}
+
+interface DocIndexEntry {
+  id: string
+  name: string
+  updatedAt: number
 }
 
 const DEFAULT_LAYOUT = { leftW: 240, rightW: 280 }
@@ -116,6 +128,25 @@ export const useEditor = create<EditorState>((set) => ({
         },
       }
     }),
+
+  newDoc: () => set({ doc: emptyDoc(), history: emptyHistory() }),
+
+  renameDoc: (name) =>
+    set((s) => ({ doc: { ...s.doc, name, updatedAt: Date.now() } })),
+
+  openDocById: (id) => {
+    const d = load<Doc>(`ascii-mockups:doc:${id}`)
+    if (d) set({ doc: d, history: emptyHistory() })
+  },
+
+  deleteDocById: (id) => {
+    remove(`ascii-mockups:doc:${id}`)
+    const idx = load<DocIndexEntry[]>('ascii-mockups:docs-index') ?? []
+    save(
+      'ascii-mockups:docs-index',
+      idx.filter((e) => e.id !== id),
+    )
+  },
 
   resetForTest: () =>
     set({
