@@ -16,8 +16,6 @@ export default function Canvas() {
   const [probeRef, metrics] = useCellMetrics()
   const tool = useTool()
   const text = useMemo(() => toText(render(doc)), [doc])
-  // Pad display with trailing spaces per row so the <pre> has non-zero width
-  // (Playwright's visibility check and CSS layout both need visible content).
   const display = useMemo(() => {
     const lines = text.split('\n')
     const padded: string[] = []
@@ -44,7 +42,31 @@ export default function Canvas() {
   }
 
   return (
-    <div className="relative inline-block">
+    <div
+      className="relative inline-block"
+      style={{ cursor: activeTool === 'select' ? 'default' : 'crosshair' }}
+      onPointerDown={(e) => {
+        ;(e.currentTarget as Element).setPointerCapture?.(e.pointerId)
+        tool.onPointerDown(toCell(e), e.target as Element)
+      }}
+      onPointerMove={(e) => tool.onPointerMove(toCell(e))}
+      onPointerUp={() => tool.onPointerUp()}
+      onDoubleClick={(e) => {
+        const c = toCell(e)
+        const hit = doc.shapes
+          .slice()
+          .reverse()
+          .find(
+            (s) =>
+              !s.hidden &&
+              c.x >= s.x &&
+              c.x < s.x + s.w &&
+              c.y >= s.y &&
+              c.y < s.y + s.h,
+          )
+        if (hit) useEditor.getState().setInlineEdit(hit.id)
+      }}
+    >
       <span
         ref={probeRef}
         className="absolute -left-[9999px] font-mono leading-[1.1]"
@@ -61,32 +83,7 @@ export default function Canvas() {
       <pre
         ref={preRef}
         className="relative m-0 select-none font-mono leading-[1.1] text-near-black"
-        style={{
-          whiteSpace: 'pre',
-          tabSize: 1,
-          cursor: activeTool === 'select' ? 'default' : 'crosshair',
-        }}
-        onPointerDown={(e) => {
-          ;(e.target as Element).setPointerCapture?.(e.pointerId)
-          tool.onPointerDown(toCell(e), e.target as Element)
-        }}
-        onPointerMove={(e) => tool.onPointerMove(toCell(e))}
-        onPointerUp={() => tool.onPointerUp()}
-        onDoubleClick={(e) => {
-          const c = toCell(e)
-          const hit = doc.shapes
-            .slice()
-            .reverse()
-            .find(
-              (s) =>
-                !s.hidden &&
-                c.x >= s.x &&
-                c.x < s.x + s.w &&
-                c.y >= s.y &&
-                c.y < s.y + s.h,
-            )
-          if (hit) useEditor.getState().setInlineEdit(hit.id)
-        }}
+        style={{ whiteSpace: 'pre', tabSize: 1 }}
       >
         {display}
       </pre>
