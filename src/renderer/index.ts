@@ -41,6 +41,9 @@ import { rasterizeTextField } from './rasterize-textfield'
 import { rasterizeTextArea } from './rasterize-textarea'
 import { rasterizeCard } from './rasterize-card'
 import { rasterizeModal } from './rasterize-modal'
+import { rasterizeStatusBar } from './rasterize-statusbar'
+import { rasterizeNavBar } from './rasterize-navbar'
+import { rasterizeTabBar } from './rasterize-tabbar'
 
 registerRasterizer('rectangle', rasterizeRectangle)
 registerRasterizer('text', rasterizeText)
@@ -55,3 +58,6 @@ registerRasterizer('textfield', rasterizeTextField)
 registerRasterizer('textarea', rasterizeTextArea)
 registerRasterizer('card', rasterizeCard)
 registerRasterizer('modal', rasterizeModal)
+registerRasterizer('status-bar', rasterizeStatusBar)
+registerRasterizer('nav-bar', rasterizeNavBar)
+registerRasterizer('tab-bar', rasterizeTabBar)
