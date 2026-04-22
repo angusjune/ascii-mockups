@@ -44,6 +44,8 @@ import { rasterizeModal } from './rasterize-modal'
 import { rasterizeStatusBar } from './rasterize-statusbar'
 import { rasterizeNavBar } from './rasterize-navbar'
 import { rasterizeTabBar } from './rasterize-tabbar'
+import { rasterizeMobileDevice } from './rasterize-mobile-device'
+import { rasterizeBrowser } from './rasterize-browser'
 
 registerRasterizer('rectangle', rasterizeRectangle)
 registerRasterizer('text', rasterizeText)
@@ -61,3 +63,5 @@ registerRasterizer('modal', rasterizeModal)
 registerRasterizer('status-bar', rasterizeStatusBar)
 registerRasterizer('nav-bar', rasterizeNavBar)
 registerRasterizer('tab-bar', rasterizeTabBar)
+registerRasterizer('mobile-device', rasterizeMobileDevice)
+registerRasterizer('browser', rasterizeBrowser)
