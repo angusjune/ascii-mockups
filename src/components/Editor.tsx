@@ -1,6 +1,7 @@
 'use client'
 
 import TopBar from './TopBar'
+import ToolPalette from './ToolPalette'
 
 export default function Editor() {
   return (
@@ -11,7 +12,9 @@ export default function Editor() {
           id="tool-palette"
           className="w-60 shrink-0 border-r border-border-cream bg-parchment p-3"
         >
-          <div className="rounded-[12px] bg-ivory p-3 ring-border-warm">Tools</div>
+          <div className="rounded-[12px] bg-ivory p-3 ring-border-warm">
+            <ToolPalette />
+          </div>
         </aside>
         <main className="flex-1 overflow-auto p-6">
           <div className="mx-auto inline-block rounded-[32px] bg-ivory p-6 ring-border-warm shadow-whisper">
