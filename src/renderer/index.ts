@@ -39,6 +39,8 @@ import { rasterizeIcon } from './rasterize-icon'
 import { rasterizeImagePlaceholder } from './rasterize-image-placeholder'
 import { rasterizeTextField } from './rasterize-textfield'
 import { rasterizeTextArea } from './rasterize-textarea'
+import { rasterizeCard } from './rasterize-card'
+import { rasterizeModal } from './rasterize-modal'
 
 registerRasterizer('rectangle', rasterizeRectangle)
 registerRasterizer('text', rasterizeText)
@@ -51,3 +53,5 @@ registerRasterizer('icon', rasterizeIcon)
 registerRasterizer('image-placeholder', rasterizeImagePlaceholder)
 registerRasterizer('textfield', rasterizeTextField)
 registerRasterizer('textarea', rasterizeTextArea)
+registerRasterizer('card', rasterizeCard)
+registerRasterizer('modal', rasterizeModal)
