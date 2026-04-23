@@ -38,4 +38,34 @@ describe('rasterizeTextField', () => {
     const full = c.join('\n')
     expect(full.includes('search')).toBe(true)
   })
+  it('does not crash at h=1 with a label (drops label, draws single-row box)', () => {
+    const s: TextFieldShape = {
+      id: 't',
+      type: 'textfield',
+      x: 0,
+      y: 0,
+      w: 10,
+      h: 1,
+      label: 'Email',
+      placeholder: '',
+      value: '',
+    }
+    const patch = rasterizeTextField(s)
+    expect(patch.cells.length).toBe(1)
+    expect(patch.cells[0].length).toBe(10)
+  })
+  it('does not crash at w=1 h=1', () => {
+    const s: TextFieldShape = {
+      id: 't',
+      type: 'textfield',
+      x: 0,
+      y: 0,
+      w: 1,
+      h: 1,
+      label: 'L',
+      placeholder: '',
+      value: '',
+    }
+    expect(() => rasterizeTextField(s)).not.toThrow()
+  })
 })

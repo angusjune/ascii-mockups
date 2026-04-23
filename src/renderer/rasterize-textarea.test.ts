@@ -20,4 +20,18 @@ describe('rasterizeTextArea', () => {
     expect(c[1].startsWith('┌')).toBe(true)
     expect(c[c.length - 1].startsWith('└')).toBe(true)
   })
+  it('does not crash at h=1 with a label', () => {
+    const s: TextAreaShape = {
+      id: 't',
+      type: 'textarea',
+      x: 0,
+      y: 0,
+      w: 10,
+      h: 1,
+      label: 'Notes',
+      value: '',
+      rows: 1,
+    }
+    expect(() => rasterizeTextArea(s)).not.toThrow()
+  })
 })

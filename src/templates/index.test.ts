@@ -20,4 +20,12 @@ describe('createTemplate', () => {
     const b = createTemplate('rectangle', 0, 0)
     expect(a.id).not.toBe(b.id)
   })
+  it('sheet gets a title, body, and 30x14 default', () => {
+    const s = createTemplate('sheet', 0, 0)
+    expect(s).toMatchObject({ type: 'sheet', w: 30, h: 14 })
+    if (s.type === 'sheet') {
+      expect(s.title).toBeDefined()
+      expect(s.body).toBeDefined()
+    }
+  })
 })

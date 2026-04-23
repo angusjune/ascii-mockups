@@ -21,4 +21,19 @@ describe('rasterizeModal', () => {
     expect(lines[lines.length - 2]).toMatch(/\[OK\]/)
     expect(lines[lines.length - 1].startsWith('└')).toBe(true)
   })
+  it('does not crash at tiny sizes (h=1 and h=2)', () => {
+    const base: ModalShape = {
+      id: 'm',
+      type: 'modal',
+      x: 0,
+      y: 0,
+      w: 10,
+      h: 1,
+      title: 'x',
+      body: 'y',
+      actions: ['OK'],
+    }
+    expect(() => rasterizeModal({ ...base, h: 1 })).not.toThrow()
+    expect(() => rasterizeModal({ ...base, h: 2 })).not.toThrow()
+  })
 })

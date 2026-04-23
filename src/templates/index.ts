@@ -64,5 +64,14 @@ export function createTemplate(type: ShapeType, x: number, y: number): Shape {
         body: 'This cannot be undone.',
         actions: ['Cancel', 'OK'],
       }
+    case 'sheet':
+      return {
+        ...base,
+        type,
+        w: 30,
+        h: 14,
+        title: 'Details',
+        body: 'Swipe down to dismiss.',
+      }
   }
 }

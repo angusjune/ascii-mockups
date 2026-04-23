@@ -259,6 +259,7 @@ function TypeSpecificFields({
       )
     case 'card':
     case 'modal':
+    case 'sheet':
       return (
         <>
           <TextField

@@ -4,6 +4,8 @@ import { useEditor } from '@/store/editor-store'
 import { render, toText } from '@/renderer'
 import { useCellMetrics } from '@/hooks/useCellMetrics'
 import { useTool } from '@/hooks/useTool'
+import { isToolId, type ShapeType } from '@/model/types'
+import { buildPlacedShape, TOOL_DRAG_MIME } from '@/lib/place-tool'
 import SelectionOverlay from './SelectionOverlay'
 import AlignmentGuides from './AlignmentGuides'
 import InlineTextEditor from './InlineTextEditor'
@@ -72,6 +74,21 @@ export default function Canvas() {
               c.y < s.y + s.h,
           )
         if (hit) useEditor.getState().setInlineEdit(hit.id)
+      }}
+      onDragOver={(e) => {
+        if (!e.dataTransfer.types.includes(TOOL_DRAG_MIME)) return
+        e.preventDefault()
+        e.dataTransfer.dropEffect = 'copy'
+      }}
+      onDrop={(e) => {
+        const raw = e.dataTransfer.getData(TOOL_DRAG_MIME)
+        if (!raw || !isToolId(raw) || raw === 'select') return
+        e.preventDefault()
+        const c = toCell(e)
+        const st = useEditor.getState()
+        const shape = buildPlacedShape(raw as ShapeType, c.x, c.y, doc.gridW, doc.gridH)
+        st.addShapeAndSelect(shape)
+        st.setActiveTool('select')
       }}
     >
       <span

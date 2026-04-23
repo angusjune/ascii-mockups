@@ -8,9 +8,12 @@ export function rasterizeTextArea(shape: TextAreaShape): CellPatch {
   const g = BOX.single
   const cells: string[][] = []
   for (let r = 0; r < h; r++) cells.push(new Array(w).fill(' '))
-  const boxTop = label.length > 0 ? 1 : 0
+  if (h <= 0 || w <= 0) return { x, y, w, h, cells }
+  // Only reserve a label row if we also have room for at least one box row.
+  const hasLabel = label.length > 0 && h >= 2
+  const boxTop = hasLabel ? 1 : 0
   const boxBot = h - 1
-  if (label.length > 0) {
+  if (hasLabel) {
     const row = alignLine(label, w, 'left').split('')
     for (let c = 0; c < w; c++) cells[0][c] = row[c]
   }

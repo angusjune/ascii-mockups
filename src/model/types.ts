@@ -6,9 +6,23 @@ export type ToolId =
   | 'rectangle' | 'ellipse' | 'line' | 'arrow' | 'text'
   | 'button' | 'image-placeholder' | 'textfield' | 'textarea'
   | 'mobile-device' | 'browser' | 'tab-bar' | 'nav-bar'
-  | 'status-bar' | 'checkbox' | 'icon' | 'card' | 'modal'
+  | 'status-bar' | 'checkbox' | 'icon' | 'card' | 'modal' | 'sheet'
 
 export type ShapeType = Exclude<ToolId, 'select'>
+
+export const ALL_TOOLS: readonly ToolId[] = [
+  'select',
+  'rectangle', 'ellipse', 'line', 'arrow', 'text',
+  'button', 'image-placeholder', 'textfield', 'textarea',
+  'mobile-device', 'browser', 'tab-bar', 'nav-bar',
+  'status-bar', 'checkbox', 'icon', 'card', 'modal', 'sheet',
+] as const
+
+const TOOL_SET: ReadonlySet<ToolId> = new Set(ALL_TOOLS)
+
+export function isToolId(s: string): s is ToolId {
+  return TOOL_SET.has(s as ToolId)
+}
 
 export interface ShapeBase {
   id: ShapeId
@@ -111,13 +125,18 @@ export interface ModalShape extends ShapeBase {
   body: string
   actions: string[]
 }
+export interface SheetShape extends ShapeBase {
+  type: 'sheet'
+  title: string
+  body: string
+}
 
 export type Shape =
   | RectangleShape | EllipseShape | LineShape | ArrowShape | TextShape
   | ButtonShape | ImagePlaceholderShape | TextFieldShape | TextAreaShape
   | MobileDeviceShape | BrowserMockupShape | TabBarShape | NavBarShape
   | MobileStatusBarShape | CheckboxShape | IconPlaceholderShape
-  | CardShape | ModalShape
+  | CardShape | ModalShape | SheetShape
 
 export interface Doc {
   id: string

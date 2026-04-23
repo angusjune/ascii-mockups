@@ -24,16 +24,20 @@ export function rasterizeModal(shape: ModalShape): CellPatch {
     cells[r][w - 1] = g.v
   }
 
-  const actionRow = h - 2
-  const bodyH = actionRow - 1
-  const innerW = Math.max(0, w - 4)
-  const bodyCells = layoutText({ text: body, w: innerW, h: bodyH, align: 'left', wrap: true })
-  for (let r = 0; r < bodyH; r++) {
-    for (let c = 0; c < innerW; c++) cells[1 + r][2 + c] = bodyCells[r][c]
+  // Body + action row only fit when there's at least one interior row
+  // between the top and bottom borders.
+  if (h >= 3) {
+    const actionRow = h - 2
+    const bodyH = actionRow - 1
+    const innerW = Math.max(0, w - 4)
+    const bodyCells = layoutText({ text: body, w: innerW, h: bodyH, align: 'left', wrap: true })
+    for (let r = 0; r < bodyH; r++) {
+      for (let c = 0; c < innerW; c++) cells[1 + r][2 + c] = bodyCells[r][c]
+    }
+    const buttons = actions.map((a) => `[${a}]`).join(' ')
+    const start = Math.max(2, w - 2 - buttons.length)
+    for (let i = 0; i < buttons.length && start + i < w - 1; i++)
+      cells[actionRow][start + i] = buttons[i]
   }
-  const buttons = actions.map((a) => `[${a}]`).join(' ')
-  const start = Math.max(2, w - 2 - buttons.length)
-  for (let i = 0; i < buttons.length && start + i < w - 1; i++)
-    cells[actionRow][start + i] = buttons[i]
   return { x, y, w, h, cells }
 }

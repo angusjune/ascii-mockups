@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, toText } from './index'
-import { emptyDoc } from '@/model/types'
+import { ALL_TOOLS, emptyDoc } from '@/model/types'
+import { createTemplate } from '@/templates'
 
 describe('render', () => {
   it('returns a grid of the doc size for an empty doc', () => {
@@ -19,4 +20,16 @@ describe('render', () => {
     const doc = { ...d, shapes: [hiddenLike] }
     expect(toText(render(doc))).toBe('\n'.repeat(d.gridH - 1))
   })
+
+  // Regression guard: the drag-to-size interaction allows the user to shrink
+  // any tool down to 1x1. No rasterizer may crash on tiny shapes.
+  it.each(ALL_TOOLS.filter((t) => t !== 'select'))(
+    'renders %s at 1x1 without crashing',
+    (tool) => {
+      const d = emptyDoc()
+      const seed = createTemplate(tool, 0, 0)
+      const shape = { ...seed, x: 0, y: 0, w: 1, h: 1 }
+      expect(() => render({ ...d, shapes: [shape] })).not.toThrow()
+    },
+  )
 })

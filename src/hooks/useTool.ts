@@ -27,10 +27,18 @@ const TEMPLATE_TOOLS = new Set<ShapeType>([
   'icon',
   'card',
   'modal',
+  'sheet',
 ])
 
 type Interaction =
-  | { kind: 'draw'; startX: number; startY: number; shapeId: string }
+  | {
+      kind: 'draw'
+      startX: number
+      startY: number
+      shapeId: string
+      isTemplate: boolean
+      dragged: boolean
+    }
   | {
       kind: 'move'
       startX: number
@@ -106,7 +114,14 @@ export function useTool() {
 
       if (DRAWING_TOOLS.has(tool as ShapeType)) {
         const id = newId()
-        interactionRef.current = { kind: 'draw', startX: p.x, startY: p.y, shapeId: id }
+        interactionRef.current = {
+          kind: 'draw',
+          startX: p.x,
+          startY: p.y,
+          shapeId: id,
+          isTemplate: false,
+          dragged: false,
+        }
         const seed = createTemplate(tool as ShapeType, p.x, p.y)
         const shape: Shape = { ...seed, id, x: p.x, y: p.y, w: 1, h: 1 }
         st.beginCoalesce()
@@ -117,9 +132,24 @@ export function useTool() {
       }
 
       if (TEMPLATE_TOOLS.has(tool as ShapeType)) {
-        const shape = createTemplate(tool as ShapeType, p.x, p.y)
-        st.applyDocChange((d) => setSelection(addShape(d, shape), [shape.id]))
-        st.setActiveTool('select')
+        // Templates start at their default size (click = pop).
+        // If the user drags off the start cell, onPointerMove switches into
+        // drag-to-size mode and overrides x/y/w/h from the drag rectangle.
+        const id = newId()
+        interactionRef.current = {
+          kind: 'draw',
+          startX: p.x,
+          startY: p.y,
+          shapeId: id,
+          isTemplate: true,
+          dragged: false,
+        }
+        const seed = createTemplate(tool as ShapeType, p.x, p.y)
+        const shape: Shape = { ...seed, id }
+        st.beginCoalesce()
+        st.applyDocChange((d) => addShape(d, shape))
+        st.applyDocChange((d) => setSelection(d, [id]))
+        st.setDragging(true)
         return
       }
     },
@@ -168,6 +198,10 @@ export function useTool() {
       return
     }
     if (i.kind === 'draw') {
+      if (p.x !== i.startX || p.y !== i.startY) i.dragged = true
+      // Template placed by a plain click keeps its default size until the
+      // pointer leaves the start cell.
+      if (i.isTemplate && !i.dragged) return
       const sx = i.startX
       const sy = i.startY
       const x = Math.min(sx, p.x)
@@ -227,7 +261,9 @@ export function useTool() {
     }
     interactionRef.current = null
     const active = st.activeTool
-    if (DRAWING_TOOLS.has(active as ShapeType)) st.setActiveTool('select')
+    if (DRAWING_TOOLS.has(active as ShapeType) || TEMPLATE_TOOLS.has(active as ShapeType)) {
+      st.setActiveTool('select')
+    }
   }, [])
 
   return { onPointerDown, onPointerMove, onPointerUp }
