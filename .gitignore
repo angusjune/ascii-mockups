@@ -6,6 +6,7 @@ playwright-report
 test-results
 .vercel
 .env*.local
+*.local.json
 .DS_Store
 *.tsbuildinfo
 next-env.d.ts
