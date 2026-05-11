@@ -1,9 +1,10 @@
 import type { LineShape } from '@/model/types'
 import type { CellPatch } from './compose'
 import { LINE, TRANSPARENT } from './glyphs'
+import { overlayCenteredLabel } from './label-overlay'
 
 export function rasterizeLine(shape: LineShape): CellPatch {
-  const { x, y, w, h, style } = shape
+  const { x, y, w, h, style, label } = shape
   const g = LINE[style]
   const cells: string[][] = []
   for (let r = 0; r < h; r++) {
@@ -12,17 +13,16 @@ export function rasterizeLine(shape: LineShape): CellPatch {
   }
   if (h === 1) {
     for (let c = 0; c < w; c++) cells[0][c] = g.h
-    return { x, y, w, h, cells }
-  }
-  if (w === 1) {
+  } else if (w === 1) {
     for (let r = 0; r < h; r++) cells[r][0] = g.v
-    return { x, y, w, h, cells }
+  } else {
+    const steps = Math.max(w, h)
+    for (let i = 0; i < steps; i++) {
+      const cx = Math.round((i / (steps - 1)) * (w - 1))
+      const cy = Math.round((i / (steps - 1)) * (h - 1))
+      cells[cy][cx] = g.diagDown
+    }
   }
-  const steps = Math.max(w, h)
-  for (let i = 0; i < steps; i++) {
-    const cx = Math.round((i / (steps - 1)) * (w - 1))
-    const cy = Math.round((i / (steps - 1)) * (h - 1))
-    cells[cy][cx] = g.diagDown
-  }
+  overlayCenteredLabel({ cells, label, inset: 0 })
   return { x, y, w, h, cells }
 }

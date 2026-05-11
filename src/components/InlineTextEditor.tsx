@@ -65,6 +65,14 @@ function textFieldOf(s: Shape): string | null {
       return 'label'
     case 'checkbox':
       return 'label'
+    case 'rectangle':
+      return 'label'
+    case 'ellipse':
+      return 'label'
+    case 'line':
+      return 'label'
+    case 'arrow':
+      return 'label'
     case 'textfield':
       return 'value'
     case 'textarea':

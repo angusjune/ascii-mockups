@@ -1,9 +1,10 @@
 import type { RectangleShape } from '@/model/types'
 import type { CellPatch } from './compose'
 import { BOX, TRANSPARENT } from './glyphs'
+import { overlayCenteredLabel } from './label-overlay'
 
 export function rasterizeRectangle(shape: RectangleShape): CellPatch {
-  const { x, y, w, h, style, fill } = shape
+  const { x, y, w, h, style, fill, label } = shape
   const g = BOX[style]
   if (w === 1 && h === 1) return { x, y, w, h, cells: [[g.tl]] }
   if (w === 1) {
@@ -33,5 +34,6 @@ export function rasterizeRectangle(shape: RectangleShape): CellPatch {
     }
     cells.push(row)
   }
+  if (h >= 3 && w >= 3) overlayCenteredLabel({ cells, label, inset: 1 })
   return { x, y, w, h, cells }
 }

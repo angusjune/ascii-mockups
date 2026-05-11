@@ -124,11 +124,42 @@ function TypeSpecificFields({
   switch (shape.type) {
     case 'rectangle':
       return (
-        <SelectField
-          label="style"
-          value={shape.style}
-          options={['single', 'double', 'rounded', 'bold', 'ascii'] as const}
-          onChange={(v) => onChange({ style: v } as PartialShape)}
+        <>
+          <SelectField
+            label="style"
+            value={shape.style}
+            options={['single', 'double', 'rounded', 'bold', 'ascii'] as const}
+            onChange={(v) => onChange({ style: v } as PartialShape)}
+          />
+          <TextField
+            label="label"
+            value={shape.label ?? ''}
+            onChange={(v) => onChange({ label: v } as PartialShape)}
+          />
+        </>
+      )
+    case 'ellipse':
+      return (
+        <TextField
+          label="label"
+          value={shape.label ?? ''}
+          onChange={(v) => onChange({ label: v } as PartialShape)}
+        />
+      )
+    case 'line':
+      return (
+        <TextField
+          label="label"
+          value={shape.label ?? ''}
+          onChange={(v) => onChange({ label: v } as PartialShape)}
+        />
+      )
+    case 'arrow':
+      return (
+        <TextField
+          label="label"
+          value={shape.label ?? ''}
+          onChange={(v) => onChange({ label: v } as PartialShape)}
         />
       )
     case 'text':

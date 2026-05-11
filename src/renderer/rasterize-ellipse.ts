@@ -1,9 +1,10 @@
 import type { EllipseShape } from '@/model/types'
 import type { CellPatch } from './compose'
 import { TRANSPARENT } from './glyphs'
+import { overlayCenteredLabel } from './label-overlay'
 
 export function rasterizeEllipse(shape: EllipseShape): CellPatch {
-  const { x, y, w, h } = shape
+  const { x, y, w, h, label } = shape
   const cells: string[][] = []
   if (w === 1 && h === 1) return { x, y, w, h, cells: [['o']] }
   for (let r = 0; r < h; r++) {
@@ -26,5 +27,6 @@ export function rasterizeEllipse(shape: EllipseShape): CellPatch {
     cells[r][left] = '('
     cells[r][right] = ')'
   }
+  if (h >= 3 && w >= 3) overlayCenteredLabel({ cells, label, inset: 1 })
   return { x, y, w, h, cells }
 }

@@ -1,9 +1,10 @@
 import type { ArrowShape } from '@/model/types'
 import type { CellPatch } from './compose'
 import { LINE, ARROW_HEADS, TRANSPARENT } from './glyphs'
+import { overlayCenteredLabel } from './label-overlay'
 
 export function rasterizeArrow(shape: ArrowShape): CellPatch {
-  const { x, y, w, h, style, direction, head } = shape
+  const { x, y, w, h, style, direction, head, label } = shape
   const g = LINE[style]
   const headSet = style === 'ascii' ? ARROW_HEADS.ascii : ARROW_HEADS[head]
   const headChar = headSet[direction]
@@ -22,5 +23,6 @@ export function rasterizeArrow(shape: ArrowShape): CellPatch {
     if (direction === 'down') cells[h - 1][col] = headChar
     else cells[0][col] = headChar
   }
+  overlayCenteredLabel({ cells, label, inset: 0 })
   return { x, y, w, h, cells }
 }

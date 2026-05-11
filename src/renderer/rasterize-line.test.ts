@@ -22,4 +22,8 @@ describe('rasterizeLine', () => {
     const s: LineShape = { id: 'l', type: 'line', x: 0, y: 0, w: 3, h: 1, style: 'ascii' }
     expect(rasterizeLine(s).cells).toEqual([['-', '-', '-']])
   })
+  it('overlays a centered label on a horizontal line', () => {
+    const s: LineShape = { id: 'l', type: 'line', x: 0, y: 0, w: 6, h: 1, style: 'single', label: 'OK' }
+    expect(rasterizeLine(s).cells).toEqual([['─', '─', 'O', 'K', '─', '─']])
+  })
 })

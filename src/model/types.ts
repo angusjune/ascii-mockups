@@ -38,17 +38,23 @@ export interface RectangleShape extends ShapeBase {
   type: 'rectangle'
   style: 'single' | 'double' | 'rounded' | 'bold' | 'ascii'
   fill?: string
+  label?: string
 }
-export interface EllipseShape extends ShapeBase { type: 'ellipse' }
+export interface EllipseShape extends ShapeBase {
+  type: 'ellipse'
+  label?: string
+}
 export interface LineShape extends ShapeBase {
   type: 'line'
   style: 'single' | 'double' | 'ascii'
+  label?: string
 }
 export interface ArrowShape extends ShapeBase {
   type: 'arrow'
   direction: 'up' | 'down' | 'left' | 'right'
   style: 'single' | 'double' | 'ascii'
   head: 'single' | 'double'
+  label?: string
 }
 export interface TextShape extends ShapeBase {
   type: 'text'

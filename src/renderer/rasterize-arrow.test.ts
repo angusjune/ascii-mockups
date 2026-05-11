@@ -59,4 +59,19 @@ describe('rasterizeArrow', () => {
     }
     expect(rasterizeArrow(s).cells).toEqual([['-', '-', '-', '>']])
   })
+  it('overlays a centered label on a horizontal arrow', () => {
+    const s: ArrowShape = {
+      id: 'a',
+      type: 'arrow',
+      x: 0,
+      y: 0,
+      w: 6,
+      h: 1,
+      direction: 'right',
+      style: 'single',
+      head: 'single',
+      label: 'go',
+    }
+    expect(rasterizeArrow(s).cells).toEqual([['─', '─', 'g', 'o', '─', '→']])
+  })
 })
