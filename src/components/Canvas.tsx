@@ -11,6 +11,7 @@ import AlignmentGuides from './AlignmentGuides'
 import InlineTextEditor from './InlineTextEditor'
 import GridBackground from './GridBackground'
 import MarqueeOverlay from './MarqueeOverlay'
+import CanvasResizeHandles from './CanvasResizeHandles'
 
 export default function Canvas() {
   const doc = useEditor((s) => s.doc)
@@ -115,6 +116,7 @@ export default function Canvas() {
       <MarqueeOverlay charW={metrics.charW} charH={metrics.charH} />
       <AlignmentGuides charW={metrics.charW} charH={metrics.charH} />
       <InlineTextEditor charW={metrics.charW} charH={metrics.charH} />
+      <CanvasResizeHandles charW={metrics.charW} charH={metrics.charH} />
     </div>
   )
 }

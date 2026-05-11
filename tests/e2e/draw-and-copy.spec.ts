@@ -10,7 +10,7 @@ test('drawing a button and copying ASCII puts text on the clipboard', async ({
   // Pick the Button tool from the palette (templates click-places a shape at canvas center).
   await page.getByRole('button', { name: /^Button/ }).click()
 
-  const canvasPre = page.locator('pre').first()
+  const canvasPre = page.locator('main pre')
   await expect(canvasPre).toBeVisible()
   const box = await canvasPre.boundingBox()
   if (!box) throw new Error('canvas not found')
